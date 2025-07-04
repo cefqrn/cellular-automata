@@ -7,13 +7,16 @@ public class Rule110 extends ElementaryCellularAutomaton {
   }
 
   @Override
-  public Cell step(Cell a, Cell b, Cell c) {
-    return switch (b) {
-      case Cell.Alive y -> switch (a) {
-        case Cell.Alive x -> c.flip();
-        case Cell.Dead  x -> b;
-      };
-      case Cell.Dead  y -> c;
+  public Cell step(Window window) {
+    return switch (window) {
+      case Window(Cell.Alive a, Cell.Alive b, Cell.Alive c) -> Cell.DEAD;
+      case Window(Cell.Alive a, Cell.Alive b, Cell.Dead  c) -> Cell.ALIVE;
+      case Window(Cell.Alive a, Cell.Dead  b, Cell.Alive c) -> Cell.ALIVE;
+      case Window(Cell.Alive a, Cell.Dead  b, Cell.Dead  c) -> Cell.DEAD;
+      case Window(Cell.Dead  a, Cell.Alive b, Cell.Alive c) -> Cell.ALIVE;
+      case Window(Cell.Dead  a, Cell.Alive b, Cell.Dead  c) -> Cell.ALIVE;
+      case Window(Cell.Dead  a, Cell.Dead  b, Cell.Alive c) -> Cell.ALIVE;
+      case Window(Cell.Dead  a, Cell.Dead  b, Cell.Dead  c) -> Cell.DEAD;
     };
   }
 }

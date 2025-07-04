@@ -10,10 +10,14 @@ public abstract class ElementaryCellularAutomaton {
     Arrays.fill(cells, defaultState());
   }
 
-  public abstract Cell step(Cell left, Cell middle, Cell right);
+  public abstract Cell step(Window window);
 
   public Cell defaultState() {
     return Cell.DEAD;
+  }
+
+  public final Cell step(Cell left, Cell middle, Cell right) {
+    return step(new Window(left, middle, right));
   }
 
   public final ElementaryCellularAutomaton step() {
@@ -27,4 +31,6 @@ public abstract class ElementaryCellularAutomaton {
 
     return this;
   }
+
+  public record Window(Cell left, Cell middle, Cell right) {}
 }
