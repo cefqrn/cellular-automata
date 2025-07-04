@@ -20,6 +20,34 @@ public class ElementaryCellularAutomaton {
     this(step, cellCount, Cell.DEAD);
   }
 
+  public static Function<Window, Cell> stepFrom(Cell[] array) {
+    if (array.length != 8)
+      throw new IllegalArgumentException("array must be of length 8 (got " + array.length + ")");
+
+    var arrayCopy = array.clone();
+    return window -> switch (window) {
+      case Window(Cell.Alive a, Cell.Alive b, Cell.Alive c) -> arrayCopy[0];
+      case Window(Cell.Alive a, Cell.Alive b, Cell.Dead  c) -> arrayCopy[1];
+      case Window(Cell.Alive a, Cell.Dead  b, Cell.Alive c) -> arrayCopy[2];
+      case Window(Cell.Alive a, Cell.Dead  b, Cell.Dead  c) -> arrayCopy[3];
+      case Window(Cell.Dead  a, Cell.Alive b, Cell.Alive c) -> arrayCopy[4];
+      case Window(Cell.Dead  a, Cell.Alive b, Cell.Dead  c) -> arrayCopy[5];
+      case Window(Cell.Dead  a, Cell.Dead  b, Cell.Alive c) -> arrayCopy[6];
+      case Window(Cell.Dead  a, Cell.Dead  b, Cell.Dead  c) -> arrayCopy[7];
+    };
+  }
+
+  public static Function<Window, Cell> stepFrom(int wolframCode) {
+    if (wolframCode < 0 || 255 < wolframCode)
+      throw new IllegalArgumentException("Wolfram code must be between 0 and 255 (got " + wolframCode + ")");
+
+    var ruleArray = new Cell[8];
+    for (var i=0; i<8; ++i)
+      ruleArray[i] = ((wolframCode >> (7 - i)) & 1) == 1 ? Cell.ALIVE : Cell.DEAD;
+
+    return stepFrom(ruleArray);
+  }
+
   public final Cell step(Cell left, Cell middle, Cell right) {
     return step.apply(new Window(left, middle, right));
   }
